@@ -88,6 +88,7 @@ export class News extends Component {
                   title={element.title}
                   description={element.description}
                   urlToImage={element.urlToImage}
+                  newsUrl = {element.url}
                 />
               </div>
             );
