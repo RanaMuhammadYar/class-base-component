@@ -33,39 +33,45 @@ export class News extends Component {
 
     this.setState({page:this.state.page-1});
     let url =
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&page=${this.state.page}&pageSize=20`;
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&pageSize=${this.props.page}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
     this.setState({ articles: parsedData.articles });
+    
   }
 
   nextBtn = async () => {
+    if(this.state.page+1>Math.ceil(this.state.totalResults/this.props.pageSize))
+    {
 
-    this.setState({page:this.state.page+1});
-    let url =
-      `https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&page=${this.state.page}&pageSize=20`;
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    console.log(parsedData);
-    this.setState({ articles: parsedData.articles });
+    }else{
+      this.setState({page:this.state.page+1});
+      let url =
+        `https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&pageSize=${this.props.pageSize}`;
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      console.log(parsedData);
+      this.setState({ articles: parsedData.articles });
+    }
   
   }
 
   async componentDidMount() {
+    console.log(this.props.pageSize);
     let url =
-      "https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&page=1&pageSize=20";
+      `https://newsapi.org/v2/top-headlines?country=us&apiKey=716f5da955e944f4b326dcc6e485500b&pageSize=${this.props.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
-    this.setState({ articles: parsedData.articles });
+    this.setState({ articles: parsedData.articles, totalResults: parsedData.totalResults });
   }
 
   render() {
     return (
       <div>
         <h2 className="text-center">Today News</h2>
-        <div className="container py-2 row">
+        <div className="container py-2 row text-center">
           {this.state.articles.map((element) => {
             return (
               <div className="col-md-4 py-3" key={element.url}>
@@ -83,7 +89,7 @@ export class News extends Component {
           <button className="btn btn-dark" onClick={this.previosBtn} disabled={this.state.page<=1}>
             &laquo; Previous
           </button>
-          <button className="btn btn-dark" onClick={this.nextBtn}>
+          <button disabled={this.state.page+1>Math.ceil(this.state.totalResults/10)} className="btn btn-dark" onClick={this.nextBtn}>
             Next &raquo;
           </button>
         </div>
